@@ -31,3 +31,16 @@ jobs:
           cache: 'maven'
       - name: mvn sourcecheck
         run: ${{ steps.install-mvnd.outputs.mvnd-dir }}/mvnd -Dmvnd.threads=2 -V -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 --no-transfer-progress -Psourcecheck -Dcheckstyle.failOnViolation=true -DskipTests checkstyle:checkstyle verify
+      
+      # install codeql-cli
+      # load query package for scan and show result
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+      
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
